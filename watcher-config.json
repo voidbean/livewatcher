@@ -1,0 +1,9 @@
+{
+    "b站主播id": {
+        "flag": "false",
+        "notification": "true",
+        "group": [
+            "通知群号"
+        ]
+    }
+}

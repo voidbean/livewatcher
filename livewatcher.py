@@ -77,7 +77,7 @@ async def delWatcher(bot, ev: CQEvent):
             await bot.send_group_msg(group_id=ev.group_id, message='删除成功')
     save_config(config)
 
-@sv.scheduled_job('cron', minute='*/5', second='30', jitter=20)
+@sv.scheduled_job('cron', minute='*/1', second='30', jitter=20)
 async def search():
     config = load_config()
     for userId in config.keys():
@@ -92,7 +92,7 @@ async def search():
             if status == 1:
                 room['flag'] = 'true'
                 save_config(config)
-                message = createMessage(res['data'])
+                message = await createMessage(res['data'])
                 if(config[userId]['notification']=='true'):
                     message = f'[CQ:at,qq=all] {message}'
                 await sendPublic(config[userId]['group'], message)

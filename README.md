@@ -1,8 +1,11 @@
 # 直播订阅
 ## 配置
 ### 在hoshino/modules中clone本项目
+
 `git clone https://github.com/voidbean/livewatcher.git`
+
 在hoshino/config目录下修改__bot__.py, 然后在MODULES_ON中增加`livewatcher`
+
 ### 修改watcher-config.json中的配置 
 以此为范例:
 ```json

@@ -46,10 +46,11 @@ async def get_ytb_status(channelId):
     REGEX = f'(?<="channelId":"{channelId}","title":)".*"(?=,"navigationEndpoint")'
     result = {'status':'0'}
     resp = await aiorequests.get(f'{ytb_url}/{channelId}')
-    match = re.findall(REGEX, resp.text)
+    resp_text = await resp.text
+    match = re.findall(REGEX, resp_text)
     if match is not None:
         result['title'] = match
-    if CEHCK_FALG in resp:
+    if CEHCK_FALG in resp_text:
         result['status'] = '1'
     return result
 
@@ -113,7 +114,7 @@ async def search():
                         message = f'[CQ:at,qq=all] {message}'
                     await sendPublic(config[userId]['group'], message)
         else:
-            result = get_ytb_status(userId)
+            result = await get_ytb_status(userId)
             room = config[userId]
             if checkFlag(room):
                 if result['status'] == '0':
@@ -123,7 +124,7 @@ async def search():
                 if result['status'] == '1':
                     room['flag'] = 'true'
                     save_config(config)
-                    message = await createYtbMessage(res['title'])
+                    message = await createYtbMessage(result['title'])
                     if(config[userId]['notification']=='true'):
                         message = f'[CQ:at,qq=all] {message}'
                     await sendPublic(config[userId]['group'], message)

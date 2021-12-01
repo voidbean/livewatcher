@@ -88,8 +88,8 @@ async def delWatcher(bot, ev: CQEvent):
     config = load_config()
     roomId = escape(ev.message.extract_plain_text().strip())
     if roomId in config:
-        if ev.group_id in config[roomId]['group']:
-            config[roomId]['group'].remove(ev.group_id)
+        if str(ev.group_id) in config[roomId]['group']:
+            config[roomId]['group'].remove(str(ev.group_id))
             await bot.send_group_msg(group_id=ev.group_id, message='删除成功')
     save_config(config)
 

@@ -37,7 +37,7 @@ def save_config(config):
         return False
 
 async def getStatus(userId):
-    url = "http://api.bilibili.com/x/space/acc/info?mid=" + userId
+    url = "https://api.bilibili.com/x/space/app/index?mid=" + userId
     resp = await aiorequests.get(url,timeout=10, stream=True)
     res = await resp.json()
     return res
@@ -99,7 +99,7 @@ async def search():
     for userId in config.keys():
         if userId.isdigit():
             res = await getStatus(userId)
-            status = res['data']['live_room']['liveStatus']
+            status = res['data']['info']['live']['liveStatus']
             room = config[userId]
             if checkFlag(room):
                 if status == 0:
@@ -109,7 +109,7 @@ async def search():
                 if status == 1:
                     room['flag'] = 'true'
                     save_config(config)
-                    message = await createBiliMessage(res['data'])
+                    message = await createBiliMessage(res['data']['info'])
                     if(config[userId]['notification']=='true'):
                         message = f'[CQ:at,qq=all] {message}'
                     await sendPublic(config[userId]['group'], message)
@@ -130,7 +130,7 @@ async def search():
                     await sendPublic(config[userId]['group'], message)
 
 async def createBiliMessage(data):
-    message = f"{data['name']}开播了!\n{data['live_room']['title']}\n{data['live_room']['url']}"
+    message = f"{data['name']}开播了!\n{data['live']['title']}\n{data['live']['url']}"
     return message
 
 async def createYtbMessage(title):

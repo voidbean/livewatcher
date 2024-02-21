@@ -18,6 +18,11 @@ CEHCK_FALG = 'icon":{"iconType":"LIVE"}'
 
 uid_cache = []
 
+
+headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360SE'
+}
+
 def load_config():
     try:
         if os.path.exists(config_path):
@@ -38,7 +43,7 @@ def save_config(config):
 
 async def getStatus(userId):
     url = "https://api.bilibili.com/x/space/app/index?mid=" + userId
-    resp = await aiorequests.get(url,timeout=10, stream=True)
+    resp = await aiorequests.get(url,timeout=10, stream=True, headers=headers)
     res = await resp.json()
     return res
 
@@ -56,6 +61,7 @@ async def get_ytb_status(channelId):
 
 async def sendPublic(userList, message):
     bot = hoshino.get_bot()
+    #await bot.send_private_msg(user_id=2452473343,message=message)
     for user in userList:
         await bot.send_group_msg(group_id=int(user), message=message)
 
@@ -93,7 +99,7 @@ async def delWatcher(bot, ev: CQEvent):
             await bot.send_group_msg(group_id=ev.group_id, message='删除成功')
     save_config(config)
 
-@sv.scheduled_job('cron', minute='*/1', second='30', jitter=20)
+@sv.scheduled_job('interval', seconds=int(120))
 async def search():
     config = load_config()
     for userId in config.keys():
